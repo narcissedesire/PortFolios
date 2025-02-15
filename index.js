@@ -14,7 +14,7 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 
-// sgMail.setApiKey(process.env.API_KEY);
+sgMail.setApiKey(process.env.API_KEY);
 
 app.post("/api/send", async (req, res) => {
   const { email, sujet, message } = req.body;
