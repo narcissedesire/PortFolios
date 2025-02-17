@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 5000;
 // app.use(cors());
 app.use(
   cors({
-    origin: "https://port-folio-narcisse.vercel.app",
+    // origin: "https://port-folio-narcisse.vercel.app",
+    origin: "https://portfolio-narcisse.pages.dev",
   })
 );
 app.use(bodyParser.json());
