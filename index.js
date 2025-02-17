@@ -8,19 +8,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// app.use(cors());
 app.use(
   cors({
-    origin: "https://port-folio-narcisse.vercel.app",
-    // origin: "https://portfolio-narcisse.pages.dev",
+    origin: "https://portfolio-narcisse.pages.dev",
   })
 );
 app.use(bodyParser.json());
+
+// Vérifiez que la clé API est correctement chargée
+console.log("API_KEY:", process.env.API_KEY);
+console.log("FROM_EMAIL:", process.env.FROM_EMAIL);
+console.log("TO_EMAIL:", process.env.TO_EMAIL);
 
 sgMail.setApiKey(process.env.API_KEY);
 
 app.post("/api/send", async (req, res) => {
   const { email, sujet, message } = req.body;
+
+  // Vérifiez les données reçues
+  console.log("Données reçues :", req.body);
 
   const msg = {
     to: process.env.TO_EMAIL,
@@ -28,8 +34,8 @@ app.post("/api/send", async (req, res) => {
     subject: sujet,
     text: message,
     html: `<p><strong>Source : </strong>${email} <br/></p>
-          <p><strong>${sujet}</strong></p>
-          <p>${message.replace(/\n/g, "<br />")}</p>`,
+           <p><strong>${sujet}</strong></p>
+           <p>${message.replace(/\n/g, "<br />")}</p>`,
   };
 
   try {
