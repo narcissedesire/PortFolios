@@ -1,26 +1,53 @@
-{
-  "name": "back",
-  "version": "1.0.0",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "build": "npm install",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@sendgrid/mail": "^8.1.4",
-    "body-parser": "^1.20.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "itty-router": "^5.0.18",
-    "nodemon": "^3.1.9",
-    "undici": "^7.3.0",
-    "worktop": "^0.7.3"
+import { Router } from "itty-router";
+import sgMail from "@sendgrid/mail";
+import dotenv from "dotenv";
+dotenv.config();
+
+// Initialise le routeur
+const router = Router();
+
+// Configurer l'API de SendGrid
+sgMail.setApiKey(process.env.API_KEY);
+
+// Définir la route pour envoyer l'email
+router.post("/api/send", async (req) => {
+  const { email, sujet, message } = await req.json();
+
+  const msg = {
+    to: process.env.TO_EMAIL,
+    from: process.env.FROM_EMAIL,
+    subject: sujet,
+    text: message,
+    html: `<p><strong>Source: </strong>${email} <br/></p>
+           <p><strong>${sujet}</strong></p>
+           <p>${message.replace(/\n/g, "<br />")}</p>`,
+  };
+
+  try {
+    await sgMail.send(msg);
+    return new Response(
+      JSON.stringify({ status: 200, message: "E-mail envoyé !" }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  } catch (error) {
+    console.error("Erreur lors de l'envoi de l'e-mail :", error);
+    return new Response(
+      JSON.stringify({
+        status: 500,
+        message: "Erreur lors de l'envoi de l'e-mail",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
-}
+});
+
+// Gérer la requête entrante et répondre avec le router
+addEventListener("fetch", (event) => {
+  event.respondWith(router.handle(event.request));
+});
