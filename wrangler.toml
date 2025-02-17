@@ -1,9 +1,0 @@
-name = "portfolio-back"
-main = "index.js"
-compatibility_date = "2024-09-23"
-compatibility_flags = ["nodejs_compat"]
-
-[vars]
-API_KEY = "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"
-TO_EMAIL = "narcissedesire5@gmail.com"
-FROM_EMAIL = "narcissedesire4@gmail.com"
