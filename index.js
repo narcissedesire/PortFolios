@@ -15,11 +15,6 @@ app.use(
 );
 app.use(bodyParser.json());
 
-// Vérifiez que la clé API est correctement chargée
-console.log("API_KEY:", process.env.API_KEY);
-console.log("FROM_EMAIL:", process.env.FROM_EMAIL);
-console.log("TO_EMAIL:", process.env.TO_EMAIL);
-
 sgMail.setApiKey(process.env.API_KEY);
 
 app.post("/api/send", async (req, res) => {
@@ -44,6 +39,9 @@ app.post("/api/send", async (req, res) => {
     res.status(200).json({ status: 200, message: "E-mail envoyé !" });
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'e-mail :", error);
+    if (error.response) {
+      console.error("Détails de l'erreur SendGrid :", error.response.body);
+    }
     res
       .status(500)
       .json({ status: 500, message: "Erreur lors de l'envoi de l'e-mail" });
